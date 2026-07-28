@@ -1,8 +1,33 @@
 import os
 
-restaurantes = [{'nome':'Praça', 'categoria':'Japonesa', 'ativo':False}, 
-                {'nome':'Pizza Suprema', 'categoria':'Pizza', 'ativo':True},
-                {'nome':'Cantina', 'categoria':'Italiano', 'ativo':False}]
+ARQUIVO_RESTAURANTES = 'restaurantes.txt'
+restaurantes = []
+
+def salvar_restaurantes_em_arquivo(restaurante: dict):
+    with open(ARQUIVO_RESTAURANTES, 'a') as arquivo:
+        linha = f"{restaurante['nome']},{restaurante['categoria']},{restaurante['ativo']}\n"
+        arquivo.write(linha)
+
+def carregar_restaurantes_do_arquivo():
+    """Lê o arquivo .txt ao iniciar o programa e preenche a lista 'restaurantes'."""
+    if not os.path.exists(ARQUIVO_RESTAURANTES):
+        return
+
+    with open(ARQUIVO_RESTAURANTES, 'r', encoding='utf-8') as arquivo:
+        for linha in arquivo:
+            linha = linha.strip()
+            if linha:  # Ignora linhas em branco
+                nome, categoria, ativo_str = linha.split('|')
+                
+                # Converte a string 'True'/'False' de volta para booleano
+                ativo = ativo_str == 'True'
+                
+                dados_do_restaurante = {
+                    'nome': nome,
+                    'categoria': categoria,
+                    'ativo': ativo
+                }
+                restaurantes.append(dados_do_restaurante)
 
 def exibir_nome_do_programa():
     print('********** Gerenciador de restaurantes **********\n')
@@ -34,14 +59,20 @@ def exibir_subtitulo(texto):
 
 def cadastrar_novo_restaurante():
     exibir_subtitulo('Cadastro de novos restaurantes')
+    
     nome_do_restaurante = input('Digite o nome do restaurante que deseja cadastrar: ')
     categoria = input(f'Digite o nome da categoria do restaurante {nome_do_restaurante}: ')
-    dados_do_restaurante = {'nome':nome_do_restaurante, 'categoria':categoria, 'ativo':False}
-    restaurantes.append(dados_do_restaurante)
-    print(f'O restaurante {nome_do_restaurante} foi cadastrado com sucesso!')
     
-    voltar_ao_menu_principal()
+    dados_do_restaurante = {
+        'nome': nome_do_restaurante,
+        'categoria': categoria,
+        'ativo': False
+    }
+    restaurantes.append(dados_do_restaurante)
+    salvar_restaurantes_em_arquivo(dados_do_restaurante)
 
+    print(f'O restaurante {nome_do_restaurante} foi cadastrado com sucesso!')
+    voltar_ao_menu_principal()
 def listar_restaurantes():
     exibir_subtitulo('Listando restaurantes')
 
