@@ -17,3 +17,4 @@ restaurante_pizza.ativo = True
 restaurantes = []
 restaurantes.append(restaurante_praca)
 print(vars(restaurante_praca))
+print(vars(restaurante_pizza))
